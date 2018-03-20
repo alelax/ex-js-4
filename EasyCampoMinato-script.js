@@ -25,18 +25,25 @@ var blackListNumber = randomNumber(1, gameSetting.maxNum, gameSetting.howMany); 
 var guessValue = new Array(); //Array contenitore dei valori indovinati
 console.log(blackListNumber);
 
+var alreadyInserted = new Array(); //Array contenitore dei valori indovinati
+
 //Viene richiesto il numero all'utente. Il ciclo verrà effettuati finchè non verrà digitato
 //un numero uguale a uno tra quelli vietati, o finchè i tentativi non finiranno
 do {
-   var userInput = insertNumber(gameSetting.maxNum);
-   var numberIsforbidden = checkNumber(userInput, blackListNumber);
+
+   //Permette l'inserimento di un numero all'utente, e ne verifica la validità
+   var correctInput = insertUnivoqueNum(gameSetting.maxNum, alreadyInserted);
+
+   //Verifico se il numero inserito è tra quelli vietati, e assegno il risultato booleano alla variabile
+   var numberIsforbidden = checkNumber(correctInput, blackListNumber);
+
    //Viene verificato se il numero inserito è uno tra quelli vietati
    if ( numberIsforbidden == true ) {
       alert("Hai perso! Il tuo punteggio è: " + gameSetting.score);
    }
    else {
       gameSetting.score++;
-      guessValue.push(userInput);
+      guessValue.push(correctInput); // 
       if( gameSetting.score == gameSetting.maxScore ) {
          alert("Complimenti hai vinto!! Hai fatto il punteggio massimo: " + gameSetting.maxScore);
       }
@@ -87,6 +94,25 @@ function startGame() {
    return setting;
 }
 
+//Funzione che permette di controllare se il numero inserito ed indovinato in precedenza
+// è stato inserito nuovamente
+function insertUnivoqueNum(max, alreadyInserted) {
+   do {
+      var userInput = insertNumber(max);
+      var numberIsAlreadyInserted = checkNumber(userInput, alreadyInserted);
+      console.log("user input: " + userInput);
+      console.log(alreadyInserted);
+      if ( numberIsAlreadyInserted == true ) {
+         alert("Non fare il furbo! Hai gia inserito questo numero! prova con un altro");
+      }
+      if (alreadyInserted.includes(userInput) == false) {
+         alreadyInserted.push(userInput);
+      }
+      console.log(alreadyInserted);
+   } while (numberIsAlreadyInserted == true);
+   return userInput;
+}
+
 //Funzione che permette di controllare se il numero inserito dall'utente è compreso
 //nell'intervallo indicato
 function insertNumber(max) {
@@ -118,8 +144,10 @@ function randomNumber(start, end, howMany) {
 //nell'array e nel caso di esito positivo ritornerà true, altrimenti false.
 function checkNumber(num, numArray){
    var numIsHere = false;
-   if(numArray.includes(num)) {
-      numIsHere = true;
+   for (var i = 0; (i < numArray.length) && (numIsHere != numArray[i]) ; i++) {
+      if(num == numArray[i]){
+         numIsHere = true;
+      }
    }
    return numIsHere;
 }
