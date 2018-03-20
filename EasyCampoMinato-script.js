@@ -118,10 +118,8 @@ function randomNumber(start, end, howMany) {
 //nell'array e nel caso di esito positivo ritornerà true, altrimenti false.
 function checkNumber(num, numArray){
    var numIsHere = false;
-   for (var i = 0; (i < numArray.length) && (numIsHere != numArray[i]) ; i++) {
-      if(num == numArray[i]){
-         numIsHere = true;
-      }
+   if(numArray.includes(num)) {
+      numIsHere = true;
    }
    return numIsHere;
 }
